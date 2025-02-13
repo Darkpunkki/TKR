@@ -1,38 +1,46 @@
 import dao.StudentDAO;
 import entity.Student;
+import entity.TimeSpent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class main {
-
     public static void main(String[] args) {
         StudentDAO studentDAO = new StudentDAO();
-        Student s = studentDAO.findStudentById(1L);
-
-        System.out.println(s);
-        System.out.println(s.getTimeSpent());
 
         // Create a new student
-        System.out.println("Creating a new student");
-        Student newStudent = new Student();
-        newStudent.setName("John Doe");
-        newStudent.setEmail("john@doe.com");
-        studentDAO.createStudent(newStudent);
-        Student john = studentDAO.findStudentByName("John Doe");
-        revertDb(studentDAO, s, john);
-        System.out.println("retrieved the new student from database :");
-        System.out.println(john);
+        Student student = new Student();
+        student.setName("Alice");
+        student.setEmail("alice@example.com");
+        studentDAO.createStudent(student);
+        System.out.println("Created student: " + student);
 
-        // Update the student
-        System.out.println("Updating the student name. original name : " + s.getName());
-        s.setName("Jane Doe");
-        studentDAO.updateStudent(s);
-        System.out.println("Updated student name : " + s.getName());
+        // Create some TimeSpent entries for this student
+        TimeSpent homeworkSession = new TimeSpent(3, 0, 0, student);
+        TimeSpent inClassSession = new TimeSpent(0, 4, 0, student);
+        TimeSpent theorySession = new TimeSpent(0, 0, 2, student);
 
+        // Associate these time entries with the student
+        List<TimeSpent> timeEntries = new ArrayList<>();
+        timeEntries.add(homeworkSession);
+        timeEntries.add(inClassSession);
+        timeEntries.add(theorySession);
+        student.setTimeSpent(timeEntries);
 
-    }
+        // Update the student so that the timeSpent list is saved.
+        studentDAO.updateStudent(student);
 
-    public static void revertDb(StudentDAO studentDAO, Student s, Student john) {
-        studentDAO.deleteStudent(john);
-        s.setName("asd");
-        studentDAO.updateStudent(s);
+        // Retrieve the student from the database and print the time spent details.
+        Student retrievedStudent = studentDAO.findStudentById(student.getId());
+        System.out.println("Retrieved student: " + retrievedStudent);
+        System.out.println("Time Spent details: ");
+        if (retrievedStudent.getTimeSpent() != null) {
+            for (TimeSpent ts : retrievedStudent.getTimeSpent()) {
+                System.out.println(ts);
+            }
+        } else {
+            System.out.println("No time spent entries found.");
+        }
     }
 }

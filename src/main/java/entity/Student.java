@@ -13,8 +13,9 @@ public class Student {
     private String name;
     private String email;
 
-    @OneToMany(mappedBy = "student" , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "student", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<TimeSpent> timeSpent;
+
 
 
 
