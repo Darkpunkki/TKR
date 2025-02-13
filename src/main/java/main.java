@@ -11,8 +11,8 @@ public class main {
 
         // Create a new student
         Student student = new Student();
-        student.setName("Alice");
-        student.setEmail("alice@example.com");
+        student.setName("Jimi");
+        student.setEmail("Jimbo@gmail.com");
         studentDAO.createStudent(student);
         System.out.println("Created student: " + student);
 
